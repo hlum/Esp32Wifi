@@ -7,6 +7,10 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 // ====== CONFIG ======
 require_once 'config.php'; // defines API_KEY
 
+// ====== FCM Helper ======
+require_once 'notification.php';
+
+
 $logFile = __DIR__ . '/dector_log.txt';
 $uploadDir = __DIR__ . '/uploads';
 
@@ -85,6 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'image_url' => $imageUrl
         ];
         appendToLog($logFile, $logData);
+        // Send FCM notification
+        $fcmResponse = sendNotification($imageUrl, '緊急！！', '誰かが侵入してきました。');
+
 
         echo json_encode([
             'status' => 'success',
