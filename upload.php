@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // Show raw log content (no API key required)
     if ($action === 'check_log') {
-        if (!file_exists($logFile)) {
+        if (!file_exists(filename: $logFile)) {
             http_response_code(404);
             echo json_encode(['status' => 'error', 'message' => 'Log file not found']);
             exit;
@@ -82,16 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Log the upload
         $logData = [
             'timestamp' => date('Y-m-d H:i:s'),
-            'image_name' => $imageName,
             'image_url' => $imageUrl
         ];
         appendToLog($logFile, $logData);
 
         echo json_encode([
             'status' => 'success',
-            'image_url' => $imageUrl,
-            'image_name' => $imageName
-        ]);
+            'image_url' => $imageUrl
+            ]);
+
     } else {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => 'Failed to save image']);
