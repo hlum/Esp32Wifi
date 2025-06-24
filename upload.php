@@ -10,6 +10,8 @@ require_once 'config.php'; // defines API_KEY
 // ====== FCM Helper ======
 require_once 'notification.php';
 
+// device token to send notifications
+$fcmTokenFile = 'fcm_token.txt';
 
 $logFile = __DIR__ . '/dector_log.txt';
 $uploadDir = __DIR__ . '/uploads';
@@ -53,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // Success message
-    echo json_encode(['status' => 'success', 'message' => 'API Key is valid']);
+    echo json_encode(value: ['status' => 'success', 'message' => 'API Key is valid']);
 
     // Append log
     $logData = [
@@ -89,9 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'image_url' => $imageUrl
         ];
         appendToLog($logFile, $logData);
-        // Send FCM notification
-        $fcmResponse = sendNotification($imageUrl, '緊急！！', '誰かが侵入してきました。');
 
+        // Send FCM notification
+        $jsonContent = file_get_contents($fcmTokenFile);
+        $tokens = json_decode($jsonContent, true); // true = associative array
+
+        // Loop through and send notifications
+        foreach ($tokens as $entry) {
+            if (isset($entry['token'])) {
+                $fcmToken = $entry['token'];
+                $response = sendFCMNotification($fcmToken, '緊急！！', '誰かが侵入してきました。');
+                print_r($response);
+            }
+        }
 
         echo json_encode([
             'status' => 'success',
