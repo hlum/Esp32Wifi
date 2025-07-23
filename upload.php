@@ -18,7 +18,7 @@ $uploadDir = __DIR__ . '/uploads';
 
 // Ensure log file and upload folder exist
 if (!file_exists(filename: $logFile)) file_put_contents($logFile, '');
-if (!file_exists($uploadDir)) mkdir($uploadDir, 0755, true);
+if (!file_exists(filename: $uploadDir)) mkdir($uploadDir, 0755, true);
 
 // Get API key from headers
 $headers = getallheaders();
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    if (!defined('API_KEY') || $clientKey !== API_KEY) {
+    if (!defined(constant_name: 'API_KEY') || $clientKey !== API_KEY) {
         http_response_code(403);
         echo json_encode(['status' => 'error', 'message' => 'Invalid API Key']);
         exit;

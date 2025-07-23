@@ -9,6 +9,9 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 // File to store logs
 $logFile = 'dector_log.txt';
 
+// set the timeout for IMAP operations
+imap_timeout(0);
+
 // APIKEY from the request headers
 $headers = getallheaders();
 $clientKey = $headers['Authorization'] ?? $headers['authorization'] ?? null;
@@ -85,4 +88,3 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     exit;
     
 }
-
